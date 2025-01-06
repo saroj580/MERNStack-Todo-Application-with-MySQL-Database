@@ -5,6 +5,7 @@ export default function Home() {
     const [tab, setTab] = useState(1)
     const [task, setTask] = useState('')
     const [todos, setTodos] = useState([])
+    const [isEdit, setIsEdit] = useState(false)
 
     const handleTabs = (all) => {
         setTab(all)
@@ -38,6 +39,41 @@ export default function Home() {
             }
     }
 
+    const [updateId, setUpdateId] = useState(null)
+    const [updatedTask, setUpdatedTask] = useState('')
+    const handleEdit = (id, task) => {
+        setIsEdit(true);
+        setTask(task);
+        console.log(id);
+        setUpdatedTask(task);
+        setUpdateId(id);
+    }
+
+    const updateTask = () => {
+        axios.post('http://localhost:5000/update-task', { updateId, task })
+            .then(res => {
+                setTodos(res.data);
+                setTask('');
+        })
+    }
+
+    const handleDelete = (id) => { 
+        console.log(id);
+        axios.post('http://localhost:5000/delete-task', { id })
+            .then(res => { 
+                setTodos(res.data);
+            })
+    }
+
+    const handleComplete = (id) => { 
+        console.log(id);
+        axios.post('http://localhost:5000/complete-task', { id })
+            .then(res => { 
+                setTodos(res.data);
+            })
+        
+    }
+
     useEffect(() => {
         axios.get('http://localhost:5000/read-task')
             .then((res) => {
@@ -50,14 +86,14 @@ export default function Home() {
   return (
         <div className='bg-gray-100 w-screen h-screen'>
           <div className='flex flex-col items-center justify-center h-screen w-screen'>
-              <h1 className='text-center'>Edit, Delete and Completed tasks are not implemented yet</h1>
+              <h1 className='text-center'>Active and Completed category are not implemented yet</h1>
               {/* input are goes here */}
                 <div>
                     <h2 className='font-bold text-2xl mb-4'>ToDo List</h2>
                 </div>
                 <div className='flex items-center justify-center'>
                     <input value={task} onChange={(e) => setTask(e.target.value)} type="text" placeholder='Enter Todo' className='p-2 outline-none border border-blue-400 rounded-md w-64'/>
-                    <button onClick={handleAddTask} className='px-4 bg-blue-600 m-2 text-white p-2 border border-black rounded-r-md' >Add</button>
+                    <button className='px-4 bg-blue-600 m-2 text-white p-2 border border-black rounded-r-md' >{isEdit ? <button onClick={updateTask}>Update</button> : <button onClick={handleAddTask}>Add</button>}</button>
                 </div>
                 
               {/* ALl the tabs are goes here */}
@@ -77,9 +113,9 @@ export default function Home() {
                         <p className='text-sm  text-gray-700'>Status:{todo.status}</p>
                     </div>
                     <div className='flex flex-col items-start text-sm'>
-                        <button className='text-blue-600'>Edit</button>
-                        <button className='text-red-600'>Delete</button>
-                        <button className='text-green-600'>Completed</button>
+                        <button className='text-blue-600' onClick={()=> handleEdit(todo.id, todo.task)}>Edit</button>
+                        <button className='text-red-600' onClick={() => handleDelete(todo.id)}>Delete</button>
+                        <button className='text-green-600' onClick={() => handleComplete(todo.id)}>Completed</button>
                     </div>
                     </div>
                 ))}
