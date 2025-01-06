@@ -86,7 +86,7 @@ export default function Home() {
   return (
         <div className='bg-gray-100 w-screen h-screen'>
           <div className='flex flex-col items-center justify-center h-screen w-screen'>
-              <h1 className='text-center'>Active and Completed category are not implemented yet</h1>
+              <h1 className='text-center'>Suggest More functionalities to add</h1>
               {/* input are goes here */}
                 <div>
                     <h2 className='font-bold text-2xl mb-4'>ToDo List</h2>
@@ -105,7 +105,7 @@ export default function Home() {
 
                 {/* All the todos are goes here */}
               {
-                todos?.map(todo => (
+                tab == 1 && todos?.map(todo => (
                   <div className='flex justify-between bg-white w-80 p-2 mt-4' key={todo.id}>
                     <div>
                         <p className='text-lg font-semibold'>{todo.task}</p>
@@ -118,7 +118,42 @@ export default function Home() {
                         <button className='text-green-600' onClick={() => handleComplete(todo.id)}>Completed</button>
                     </div>
                     </div>
-                ))}
+                ))
+              }
+
+              {
+                tab == 2 && todos?.filter(todo => todo.status === 'active').map(todo => (
+                  <div className='flex justify-between bg-white w-80 p-2 mt-4' key={todo.id}>
+                    <div>
+                        <p className='text-lg font-semibold'>{todo.task}</p>
+                        <p className='text-xs text-gray-600'>{new Date(todo.createdAt).toLocaleString()}</p>
+                        <p className='text-sm  text-gray-700'>Status:{todo.status}</p>
+                    </div>
+                    <div className='flex flex-col items-start text-sm'>
+                        <button className='text-blue-600' onClick={()=> handleEdit(todo.id, todo.task)}>Edit</button>
+                        <button className='text-red-600' onClick={() => handleDelete(todo.id)}>Delete</button>
+                        <button className='text-green-600' onClick={() => handleComplete(todo.id)}>Completed</button>
+                    </div>
+                    </div>
+                ))
+              }
+
+              {
+                tab == 3 && todos?.filter(todo => todo.status == 'completed').map(todo => (
+                  <div className='flex justify-between bg-white w-80 p-2 mt-4' key={todo.id}>
+                    <div>
+                        <p className='text-lg font-semibold'>{todo.task}</p>
+                        <p className='text-xs text-gray-600'>{new Date(todo.createdAt).toLocaleString()}</p>
+                        <p className='text-sm  text-gray-700'>Status:{todo.status}</p>
+                    </div>
+                    <div className='flex flex-col items-start text-sm'>
+                        <button className='text-blue-600' onClick={()=> handleEdit(todo.id, todo.task)}>Edit</button>
+                        <button className='text-red-600' onClick={() => handleDelete(todo.id)}>Delete</button>
+                        <button className='text-green-600' onClick={() => handleComplete(todo.id)}>Completed</button>
+                    </div>
+                    </div>
+                ))
+              }
             </div>
         </div>
     )
